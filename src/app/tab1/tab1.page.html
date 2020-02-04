@@ -9,14 +9,11 @@
 <ion-content>
   <ion-card *ngFor="let member of randomMember">
     <ion-item>
-      <ion-avatar item-start>
-        <img [src]="member.imageURL">
-      </ion-avatar>
       <h2>{{member.name}}</h2>
       <p></p>
     </ion-item>
 
-    <img [src]="member.largeImage">
+    <img [src]="member.largeImageUrl">
 
     <ion-card-content>
       <p></p>

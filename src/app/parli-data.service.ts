@@ -88,17 +88,56 @@ export class ParliDataService {
     // https://api.parliament.uk/photo/iXSJ5Acp
   }
 
-  getMemberImageFromID(id: number, crop: string) {
-    const cropsAvailable = ['ThreeTwo', 'FullSize', 'ThreeFour', 'OneOne'];
-    return (
-      'https://members-api.parliament.uk/api/Members/'
-      + id +
-      '/Portrait?cropType='
-      + crop
-    );
-  }
-
   getMemberImageMetadataFromAPIURL(apiURL) {
     // foo
+  }
+
+  getNewApiRandomMember(house: string) {
+    if (house !== 'Lords' && house !== 'Commons') {
+      house = 'Commons';
+    }
+    let membersCount = 650;
+    if (house !== 'Commons') {
+      membersCount = 700;
+    }
+
+    const rand = Math.floor(Math.random() * membersCount);
+    return this.http
+      .get(
+        'https://cors-anywhere.herokuapp.com/https://members-api.parliament.uk/api/Members/Search?House=' +
+          house +
+          '&IsCurrentMember=true&skip=' +
+          rand +
+          '&take=1'
+      )
+      .pipe(
+        map(responseData => {
+          const randomMembers = [];
+          for (const key in responseData) {
+            if (key !== '') {
+              randomMembers.push(responseData[key]);
+            }
+          }
+          return randomMembers[0][0];
+        })
+      );
+  }
+
+  getNewApiMemberImage(id: number, crop?: string) {
+    const cropsAvailable = ['ThreeTwo', 'FullSize', 'ThreeFour', 'OneOne'];
+    if (cropsAvailable.includes(crop)) {
+      return (
+        'https://members-api.parliament.uk/api/Members/' +
+        id +
+        '/Portrait?cropType=' +
+        crop
+      );
+    } else {
+      return (
+        'https://members-api.parliament.uk/api/Members/' +
+        id +
+        '/Portrait?cropType=FullSize'
+      );
+    }
   }
 }

@@ -1,4 +1,3 @@
-import { HTTP } from '@ionic-native/http/ngx';
 import { ParliDataService } from './parli-data.service';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, ParliDataService, HTTP
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, ParliDataService
   ],
   bootstrap: [AppComponent]
 })

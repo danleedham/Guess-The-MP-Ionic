@@ -1,8 +1,10 @@
-<ion-content>
-  <ion-card *ngFor="let member of members">
-    <img [src]='"https://members-api.parliament.uk/api/Members/"+member.id+"/Portrait?cropType=FullSize"'>
+<ion-content *ngIf="!isFetching">
+  <ion-card *ngFor="let member of randomMember">
+    <img (error)="updateMemberImageUrl($event)"
+      [src]='"https://members-api.parliament.uk/api/Members/"+member.id+"/Portrait?cropType="+cropType+"&webVersion=false"'>
     <ion-card-header>
-      <ion-card-subtitle [style.color]="member.latestParty.backgroundColour">{{ member.latestParty.name }}</ion-card-subtitle>
+      <ion-card-subtitle [style.color]="member.latestParty.backgroundColour">{{ member.latestParty.name }}
+      </ion-card-subtitle>
       <ion-card-title>{{ member.nameDisplayAs }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -10,4 +12,11 @@
     </ion-card-content>
 
   </ion-card>
+  <section padding>
+    <ion-button expand="block">{{ answers.party }}</ion-button>
+  </section>
+
+</ion-content>
+<ion-content align-items-center *ngIf="isFetching">
+  <ion-spinner></ion-spinner>
 </ion-content>

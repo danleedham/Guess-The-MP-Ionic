@@ -7,19 +7,69 @@ import { Component } from '@angular/core';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-  members = [];
-  fullSizeImageUrl: string;
+  randomMember = [];
+  answers = [];
+  parties = [];
+  cropType = 'OneOne';
   isFetching: boolean;
+  house = 'Commons';
+  useHdImages = true;
+
   constructor(public parliDataService: ParliDataService) {}
 
   ionViewWillEnter() {
-    this.getRandomMember('Lords');
+    this.loadSavedSettings();
+    this.getRandomMembers(this.house);
+    this.parliDataService.getNewApiAllParties(this.house).subscribe(data=>{
+      this.parties = this.shuffle(data);
+      console.log(this.parties);
+    });
   }
 
-  getRandomMember(house: string) {
-    this.parliDataService.getNewApiRandomMember(house).subscribe(data => {
-      this.members = [data.value];
-      console.log(this.members);
+  getRandomMembers(house: string) {
+    this.isFetching = true;
+    this.parliDataService.getNewApiRandomMembers(house, 4).subscribe(data => {
+      this.randomMember = [data[0].value];
+      // console.log(this.randomMember);
+      this.isFetching = false;
+      // Shuffle answers
+      this.answers = this.shuffle(data);
     });
+  }
+
+  updateMemberImageUrl($event) {
+    // Listen for the member having no image.
+    console.log($event);
+    if ($event.type === 'error') {
+      this.getRandomMembers(this.house);
+    }
+  }
+
+  loadSavedSettings() {
+    if (localStorage.getItem('guess-mp-house') !== null) {
+      this.house = localStorage.getItem('guess-mp-house');
+    }
+    if (localStorage.getItem('guess-mp-images') !== null) {
+      const set = localStorage.getItem('guess-mp-images');
+      if (set === 'true') {
+        this.useHdImages = true;
+      } else {
+        this.useHdImages = false;
+      }
+    }
+  }
+
+  onClickCheckName(e) {}
+
+  onClickCheckConstituency(e) {}
+
+  onClickCheckParty(e) {}
+
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 }

@@ -92,7 +92,7 @@ export class ParliDataService {
     // foo
   }
 
-  getNewApiRandomMember(house: string) {
+  getNewApiRandomMembers(house: string, count: number) {
     if (house !== 'Lords' && house !== 'Commons') {
       house = 'Commons';
     }
@@ -108,7 +108,8 @@ export class ParliDataService {
           house +
           '&IsCurrentMember=true&skip=' +
           rand +
-          '&take=1'
+          '&take=' +
+          count
       )
       .pipe(
         map(responseData => {
@@ -118,7 +119,26 @@ export class ParliDataService {
               randomMembers.push(responseData[key]);
             }
           }
-          return randomMembers[0][0];
+          return randomMembers[0]; // Take just the 'items'
+        })
+      );
+  }
+
+  getNewApiAllParties(house: string) {
+    return this.http
+      .get(
+        'https://cors-anywhere.herokuapp.com/https://members-api.parliament.uk//api/Parties/GetActive/' +
+          house
+      )
+      .pipe(
+        map(responseData => {
+          const allParties = [];
+          for (const key in responseData) {
+            if (key !== '') {
+              allParties.push(responseData[key]);
+            }
+          }
+          return allParties[0]; // Take just the 'items'
         })
       );
   }

@@ -26,18 +26,29 @@ export class ParliDataService {
       );
   }
 
-  getMembersCurrentParliament() {
-    return this.http.get('https://api.parliament.uk/query/member_current').pipe(
-      map(responseData => {
-        const currentParliamentDetail = [];
-        for (const key in responseData) {
-          if (key !== '') {
-            currentParliamentDetail.push(responseData[key]);
+  getMembersCurrentParliament(house: string) {
+    let houseId = '';
+    if (house === 'Lords') {
+      houseId = 'WkUWUBMx';
+    } else {
+      houseId = '1AFu55Hs';
+    }
+    return this.http
+      .get(
+        'https://api.parliament.uk/query/house_current_members?house_id=' +
+          houseId
+      )
+      .pipe(
+        map(responseData => {
+          const currentParliamentDetail = [];
+          for (const key in responseData) {
+            if (key !== '') {
+              currentParliamentDetail.push(responseData[key]);
+            }
           }
-        }
-        return currentParliamentDetail[1];
-      })
-    );
+          return currentParliamentDetail;
+        })
+      );
   }
 
   getAllMembersImageData() {

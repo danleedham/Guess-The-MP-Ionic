@@ -8,6 +8,9 @@ import { Component } from '@angular/core';
 })
 export class Tab1Page {
   randomMember = [];
+  randomMember2 = [];
+  randomMember3 = [];
+  randomMember4 = [];
   answers = [];
   parties = [];
   cropType = 'OneOne';
@@ -20,20 +23,17 @@ export class Tab1Page {
   ionViewWillEnter() {
     this.loadSavedSettings();
     this.getRandomMembers(this.house);
-    this.parliDataService.getNewApiAllParties(this.house).subscribe(data=>{
-      this.parties = this.shuffle(data);
-      console.log(this.parties);
-    });
   }
 
   getRandomMembers(house: string) {
-    this.isFetching = true;
+    // this.isFetching = true;
+    this.parliDataService.getMembersCurrentParliament(house).subscribe(data => {
+      const allMembers = data[1];
+      const chosenMember = data[1][Math.floor(Math.random() * data[1].length)];
+    });
+
     this.parliDataService.getNewApiRandomMembers(house, 4).subscribe(data => {
       this.randomMember = [data[0].value];
-      // console.log(this.randomMember);
-      this.isFetching = false;
-      // Shuffle answers
-      this.answers = this.shuffle(data);
     });
   }
 
